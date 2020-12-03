@@ -14,7 +14,7 @@
   <body>
     <% if(message){%>
     <div class="alert alert-danger mt-2 mx-2" role="alert"><%= message %></div>
-
+<div class="row">
     <%}%>
     <div class="col-6">
       <form method="POST" action="<% if(!updated){%>/add<%}else {%>/edit<%}%>">
@@ -95,7 +95,7 @@
     </div>
     <% if (contexts.length>0) {%>
 
-    <div class="col-8">
+    <div class="col-6">
       <table class="table">
         <thead>
           <tr>
@@ -111,17 +111,20 @@
 
         <tbody>
           <tr>
-            <th scope="row"><%= contexts[context].id%></th>
+            
+            <th scope="row"><%=  parseInt( context)+1 %></th>
             <th><%= contexts[context].Product_name%></th>
             <td><%= contexts[context].Rating%></td>
             <td><%= contexts[context].Categary%></td>
             <td><%= contexts[context].Description%></td>
-            <td>
-              <form action="edit/<%= contexts[context].id %>">
+            <td class=" d-flex flex-inline">
+              <form class="mr-2" action="edit/<%= contexts[context].id %>">
                 <button class="btn btn-success" type="submit">Edit</button>
-              </form>
-              /
-              <form method="POST" action="delete/<%= contexts[context].id %>">
+              </form> 
+
+               / 
+
+              <form class="ml-2" method="POST" action="delete/<%= contexts[context].id %>">
                 <button class="btn btn-danger" type="submit">Delete</button>
               </form>
             </td>
@@ -131,7 +134,7 @@
       </table>
     </div>
     <% }%>
-
+</div>
     <script>
       console.log("value", document.querySelector(".alert"));
       if (document.querySelector(".alert")) {
