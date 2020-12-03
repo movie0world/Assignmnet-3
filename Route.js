@@ -9,13 +9,16 @@ var router = express.Router();
 var product_data = [];
 var count = 1;
 // Home page route.
-router.get("/", function (req, res, next) {
-  Product.find({}).sort({"createdAt":'desc'})
-    .then((data) => {
-      res.render("index", { contexts: data, updated: false, message: "" });
-    })
-    .catch((e) => console.log(e));
+router.get("/",async function (req, res, next) {
+  let data= await Product.find({}).sort({"createdAt":'desc'})
+    ;
+      res.render("index", { contexts:trunchvalue(data) , updated: false, message: "" });
+   
 });
+
+
+
+
 async function validatedata(req, res, next) {
   if (
     req.body.Product_name != "" &&
@@ -25,8 +28,10 @@ async function validatedata(req, res, next) {
   ) {
     next();
   } else {
-    let data = await Product.find({});
-let message = "Plz fill the form";
+    let data = await Product.find({}).sort({"createdAt":'desc'});
+    console.log("Value of data ",data)
+    data=trunchvalue(data)
+let message = "Please fill all the field ";
     if (req.url == "/add") {
       res.render("index", { message: message, contexts: data, updated: false });
     }else{
@@ -37,6 +42,12 @@ console.log("Boy value edit",req.body)
   }
 }
 
+function trunchvalue(data){
+for( let i=0;i<data.length;i++){
+   data[i]['Description']=(data[i].Description.length > 25) ? data[i].Description.substr(0, 25-1) + ' ...' : data[i].Description;
+}
+return data
+}
 router.post("/add", validatedata, async function (req, res, next) {
   let product = new Product({
     Product_name: req.body.Product_name,
@@ -58,12 +69,13 @@ router.post("/add", validatedata, async function (req, res, next) {
 router.post("/delete/:id", async function (req, res, next) {
   Product.deleteOne({ _id: req.params.id })
     .then((doc) => {
-      console.log(doc.ok);
+      console.log(doc);
+      res.redirect("/");
     })
     .catch((err) => {
       console.error(err);
     });
-  res.redirect("/");
+  
 });
 router.post("/edit/", validatedata, async function (req, res, next) {
   console.log("body key",req.body.id)
